@@ -1,0 +1,52 @@
+<apex:page controller="select2controller">
+  <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css"/>
+   <apex:includeScript value="https://code.jquery.com/jquery-3.3.1.min.js"/>
+  <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"/>
+<script>
+  Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.select2controller.getOptions}',
+            function(result, event){
+                if (event.status) {
+ console.log(JSON.stringify(result));
+                   $(".js-example-basic-multiple").select2({
+  data: result,
+  dataType: "json",
+  placeholder: 'Select an option'
+});
+                } else if (event.type === 'exception') {
+                     console.log(result);
+                } else {
+                    document.getElementById("responseErrors").innerHTML = event.message;
+                }
+            }, 
+            {escape: true}
+        );
+
+function abcd() 
+{
+var json = new Array();
+var wrapperlist = new Array();
+json = $("#abcd").select2('data');
+  
+  $( json ).each(function( index,element ) {
+  console.log( index + ": " + element["text"]);
+  var wrapper={};
+  wrapper.id = element["id"];
+  wrapper.text=element["text"];
+  wrapperlist.push(wrapper);
+})
+console.log('ww'+wrapperlist);
+setMyParam(JSON.stringify(wrapperlist));
+}
+
+</script>
+<apex:form id="show">
+
+ <apex:actionfunction name="setMyParam" action="{!savelist}" rerender="show">
+              <apex:param name="test123" value="" assignto="{!test}" />
+       </apex:actionfunction>
+       </apex:form>
+<select id="abcd" class="js-example-basic-multiple" multiple="multiple" style="width: 75%"></select>
+<button onclick="abcd();">Save List</button>
+
+</apex:page>
